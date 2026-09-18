@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'learningpage.dart';
 import 'wheelpage.dart';
 
-// Model data materi
 class HarmonyItem {
   final String title;
   final String description;

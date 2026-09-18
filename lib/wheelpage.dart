@@ -4,18 +4,18 @@ import 'package:flutter/services.dart';
 import 'learnpage.dart';
 
 const List<Color> rybColors = [
-  Color(0xFFE52020), // 0: Red
-  Color(0xFFFF5722), // 1: Red-Orange
-  Color(0xFFFF9800), // 2: Orange
-  Color(0xFFFFC107), // 3: Yellow-Orange
-  Color(0xFFFFEB3B), // 4: Yellow
-  Color(0xFF8BC34A), // 5: Yellow-Green
-  Color(0xFF4CAF50), // 6: Green
-  Color(0xFF009688), // 7: Blue-Green
-  Color(0xFF2196F3), // 8: Blue
-  Color(0xFF3F51B5), // 9: Blue-Purple
-  Color(0xFF9C27B0), // 10: Purple
-  Color(0xFFE91E63), // 11: Red-Purple
+  Color(0xFFE52020),
+  Color(0xFFFF5722),
+  Color(0xFFFF9800),
+  Color(0xFFFFC107),
+  Color(0xFFFFEB3B),
+  Color(0xFF8BC34A),
+  Color(0xFF4CAF50),
+  Color(0xFF009688),
+  Color(0xFF2196F3),
+  Color(0xFF3F51B5),
+  Color(0xFF9C27B0),
+  Color(0xFFE91E63),
 ];
 
 String colorToHex(Color color) {
@@ -25,9 +25,8 @@ String colorToHex(Color color) {
 class SchemeConfig {
   final String title;
   final String quickTip;
-  final String
-      geometryType; // none (analogous), mono, complement, triangle, square, split
-  final List<double> pointerAngles; // Sudut indikator (dalam derajat)
+  final String geometryType;
+  final List<double> pointerAngles;
 
   const SchemeConfig({
     required this.title,
@@ -43,42 +42,42 @@ final List<SchemeConfig> schemeList = [
     quickTip:
         'Warna-warna yang saling bersebelahan pada roda warna. Memberikan kesan harmonis dan nyaman.',
     geometryType: 'none',
-    pointerAngles: [240, 270, 300], // 3 warna berdampingan di atas
+    pointerAngles: [240, 270, 300],
   ),
   const SchemeConfig(
     title: 'Monochrome',
     quickTip:
         'Satu warna rona yang dieksplorasi hingga ke dalam lingkaran dengan berbagai tingkat kecerahan.',
     geometryType: 'mono',
-    pointerAngles: [270], // 1 titik acuan rona aktif
+    pointerAngles: [270],
   ),
   const SchemeConfig(
     title: 'Complement',
     quickTip:
         'Dua warna berhadapan langsung (180°) yang menghasilkan kontras visual paling tajam.',
     geometryType: 'complement',
-    pointerAngles: [90, 270], // Atas vs Bawah
+    pointerAngles: [90, 270],
   ),
   const SchemeConfig(
     title: 'Triangle',
     quickTip:
         'Tiga titik segitiga seimbang (120°) yang membuat tampilan dinamis dan tetap stabil.',
     geometryType: 'triangle',
-    pointerAngles: [270, 30, 150], // Segitiga sama sisi
+    pointerAngles: [270, 30, 150],
   ),
   const SchemeConfig(
     title: 'Square',
     quickTip:
         'Empat warna berjarak sama (90°) untuk variasi kategori data yang sangat kaya.',
     geometryType: 'square',
-    pointerAngles: [270, 0, 90, 180], // Bujur sangkar
+    pointerAngles: [270, 0, 90, 180],
   ),
   const SchemeConfig(
     title: 'Split Complement',
     quickTip:
         'Kombinasi satu warna dasar dengan dua warna yang mengapit warna komplementernya.',
     geometryType: 'split',
-    pointerAngles: [270, 60, 120], // Split complement
+    pointerAngles: [270, 60, 120],
   ),
 ];
 
@@ -91,37 +90,28 @@ class WheelPage extends StatefulWidget {
 
 class _WheelPageState extends State<WheelPage> {
   int _currentSchemeIndex = 0;
-  double _rotationAngle = 0.0; // Dalam radian
+  double _rotationAngle = 0.0;
   double _startDragAngle = 0.0;
   double _currentRotationBase = 0.0;
 
   SchemeConfig get currentScheme => schemeList[_currentSchemeIndex];
 
-  // Mengambil warna pada sudut tertentu dengan memperhitungkan rotasi roda
   Color _getColorAtAngle(double pointerDeg) {
-    // Normalisasi sudut terhadap rotasi roda warna
     double rotDeg = _rotationAngle * 180 / math.pi;
     double effectiveDeg = (pointerDeg - rotDeg) % 360;
     if (effectiveDeg < 0) effectiveDeg += 360;
-
-    // Tiap sektor warna berukuran 30 derajat (360 / 12 = 30)
     int colorIndex = ((effectiveDeg + 15) ~/ 30) % 12;
     return rybColors[colorIndex];
   }
 
-  // Mendapatkan daftar warna palette sesuai skema dan posisi rotasi saat ini
   List<Color> _getActivePaletteColors() {
     if (currentScheme.geometryType == 'mono') {
       final baseColor = _getColorAtAngle(270);
       final hsl = HSLColor.fromColor(baseColor);
       return [
-        hsl
-            .withLightness((hsl.lightness + 0.25).clamp(0.0, 0.95))
-            .toColor(), // Terang
-        baseColor, // Warna dasar
-        hsl
-            .withLightness((hsl.lightness - 0.25).clamp(0.05, 1.0))
-            .toColor(), // Gelap
+        hsl.withLightness((hsl.lightness + 0.25).clamp(0.0, 0.95)).toColor(),
+        baseColor,
+        hsl.withLightness((hsl.lightness - 0.25).clamp(0.05, 1.0)).toColor(),
       ];
     }
 
@@ -283,21 +273,20 @@ class _WheelPageState extends State<WheelPage> {
               ),
               const SizedBox(height: 24),
 
-              // Area Interaktif: Color Wheel Putar + Indikator Garis Statis
               Center(
                 child: SizedBox(
                   width: 270,
                   height: 270,
                   child: GestureDetector(
                     onPanStart: (details) {
-                      final center = const Offset(135, 135);
+                      const center = Offset(135, 135);
                       final touch = details.localPosition;
                       _startDragAngle = math.atan2(
                           touch.dy - center.dy, touch.dx - center.dx);
                       _currentRotationBase = _rotationAngle;
                     },
                     onPanUpdate: (details) {
-                      final center = const Offset(135, 135);
+                      const center = Offset(135, 135);
                       final touch = details.localPosition;
                       final currentAngle = math.atan2(
                           touch.dy - center.dy, touch.dx - center.dx);
@@ -309,7 +298,6 @@ class _WheelPageState extends State<WheelPage> {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        // Roda Warna Penuh yang Berputar
                         Transform.rotate(
                           angle: _rotationAngle,
                           child: CustomPaint(
@@ -320,8 +308,6 @@ class _WheelPageState extends State<WheelPage> {
                             ),
                           ),
                         ),
-
-                        // Garis Indikator Statis di atas Roda
                         CustomPaint(
                           size: const Size(270, 270),
                           painter: StaticIndicatorPainter(
@@ -343,7 +329,6 @@ class _WheelPageState extends State<WheelPage> {
               ),
               const SizedBox(height: 16),
 
-              // SECTION BAWAH: Palette Swatches + Hex Code Real-Time
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -430,7 +415,6 @@ class _WheelPageState extends State<WheelPage> {
   }
 }
 
-// Painter Roda Warna Penuh (12 Warna RYB) + Mode Monokrom (Gradasi ke Dalam)
 class FullWheelPainter extends CustomPainter {
   final bool isMonochrome;
 
@@ -446,7 +430,6 @@ class FullWheelPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
-    // Gambar 12 sektor warna RYB di lingkaran luar
     for (int i = 0; i < 12; i++) {
       paint.color = rybColors[i];
       final startAngle = (i * 30 - 15) * math.pi / 180;
@@ -461,7 +444,6 @@ class FullWheelPainter extends CustomPainter {
       );
     }
 
-    // Jika mode Monochrome: Buat lapisan cincin warna ke dalam lingkaran
     if (isMonochrome) {
       final innerPaint = Paint()..style = PaintingStyle.stroke;
       const rings = 3;
@@ -537,7 +519,6 @@ class StaticIndicatorPainter extends CustomPainter {
       ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke;
 
-    // Gambar garis geometri jika ada relasi poligon (bukan mode none/mono tunggal)
     if (scheme.geometryType != 'none' && scheme.geometryType != 'mono') {
       final path = Path()..addPolygon(points, true);
       canvas.drawPath(path, linePaint);
@@ -549,7 +530,6 @@ class StaticIndicatorPainter extends CustomPainter {
       canvas.drawCircle(p, 9, nodeBorderPaint);
     }
 
-    // Penunjuk khusus Analogous: Garis lengkung busur di 3 titik berdampingan
     if (scheme.geometryType == 'none') {
       final arcPaint = Paint()
         ..color = const Color(0xFFE2E4E8).withOpacity(0.95)
