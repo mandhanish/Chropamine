@@ -1356,18 +1356,18 @@ class DynamicSchemeWheelPainter extends CustomPainter {
       ..strokeWidth = strokeWidth;
 
     const standardColors = [
-      Color(0xFFE52020), // Merah
-      Color(0xFFFF5722), // Merah-Oranye
-      Color(0xFFFF9800), // Oranye
-      Color(0xFFFFC107), // Kuning-Oranye
-      Color(0xFFFFEB3B), // Kuning
-      Color(0xFF8BC34A), // Kuning-Hijau
-      Color(0xFF4CAF50), // Hijau
-      Color(0xFF009688), // Biru-Hijau
-      Color(0xFF2196F3), // Biru
-      Color(0xFF3F51B5), // Biru-Ungu
-      Color(0xFF9C27B0), // Ungu
-      Color(0xFFE91E63), // Merah-Ungu
+      Color(0xFFE52020),
+      Color(0xFFFF5722),
+      Color(0xFFFF9800),
+      Color(0xFFFFC107),
+      Color(0xFFFFEB3B),
+      Color(0xFF8BC34A),
+      Color(0xFF4CAF50),
+      Color(0xFF009688),
+      Color(0xFF2196F3),
+      Color(0xFF3F51B5),
+      Color(0xFF9C27B0),
+      Color(0xFFE91E63),
     ];
 
     for (int i = 0; i < 12; i++) {

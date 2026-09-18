@@ -38,7 +38,7 @@ class SchemeConfig {
 
 final List<SchemeConfig> schemeList = [
   const SchemeConfig(
-    title: 'Analogus',
+    title: 'Analogous',
     quickTip:
         'Warna-warna yang saling bersebelahan pada roda warna. Memberikan kesan harmonis dan nyaman.',
     geometryType: 'none',
@@ -194,10 +194,8 @@ class _WheelPageState extends State<WheelPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
 
-              // Selector Skema
-              // Selector Skema (Lebar Box Tetap / Anti-Shift)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -216,7 +214,6 @@ class _WheelPageState extends State<WheelPage> {
                     ),
                   ),
                   const SizedBox(width: 12),
-                  // Box judul dibuat lebar tetap agar panah tidak bergeser
                   Container(
                     width: 170,
                     height: 38,

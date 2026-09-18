@@ -174,14 +174,14 @@ class _LearnPageState extends State<LearnPage> {
               const SizedBox(height: 16),
 
               // Search Bar
-              Container(
-                height: 38,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF1F2F4),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              const SizedBox(height: 20),
+              // Container(
+              //   height: 38,
+              //   decoration: BoxDecoration(
+              //     color: const Color(0xFFF1F2F4),
+              //     borderRadius: BorderRadius.circular(18),
+              //   ),
+              // ),
+              const SizedBox(height: 70),
 
               // List Harmoni Cards
               ListView.separated(
