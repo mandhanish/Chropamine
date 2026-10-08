@@ -604,7 +604,7 @@ class _LearningPageState extends State<LearningPage> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
+                        color: Colors.black.withValues(alpha: 0.08),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -628,7 +628,7 @@ class _LearningPageState extends State<LearningPage> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -879,7 +879,7 @@ class _LearningPageState extends State<LearningPage> {
                     decoration: BoxDecoration(
                       color: idx <= _currentQuizIndex
                           ? Colors.white
-                          : Colors.white.withOpacity(0.35),
+                          : Colors.white.withValues(alpha: 0.35),
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
@@ -1008,7 +1008,7 @@ class _LearningPageState extends State<LearningPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 12),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
+                          color: Colors.white.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Text(
@@ -1101,7 +1101,7 @@ class _LearningPageState extends State<LearningPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Colors.white.withOpacity(0.92),
+                  color: Colors.white.withValues(alpha: 0.92),
                   height: 1.3,
                 ),
               ),
@@ -1113,7 +1113,7 @@ class _LearningPageState extends State<LearningPage> {
               width: 150,
               height: 150,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(22),
               ),
               child: Icon(
@@ -1137,7 +1137,7 @@ class _LearningPageState extends State<LearningPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.18),
+                          color: Colors.white.withValues(alpha: 0.18),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: const Text(
@@ -1178,7 +1178,7 @@ class _LearningPageState extends State<LearningPage> {
                                     ? 'No keys earned due to timeout'
                                     : '$_sessionEarnedKeys of 3 keys earned'),
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
@@ -1197,7 +1197,7 @@ class _LearningPageState extends State<LearningPage> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white.withOpacity(0.2),
+                          backgroundColor: Colors.white.withValues(alpha: 0.2),
                           foregroundColor: Colors.white,
                           elevation: 0,
                           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -1292,7 +1292,7 @@ class SchemeVisualCard extends StatelessWidget {
         border: Border.all(color: const Color(0xFFE9ECEF), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -1315,7 +1315,7 @@ class SchemeVisualCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 4,
                 ),
               ],
@@ -1371,7 +1371,7 @@ class DynamicSchemeWheelPainter extends CustomPainter {
     ];
 
     for (int i = 0; i < 12; i++) {
-      paint.color = standardColors[i].withOpacity(0.22);
+      paint.color = standardColors[i].withValues(alpha: 0.22);
       final startAngle = (i * 30 - 15) * math.pi / 180;
       const sweepAngle = 28 * math.pi / 180;
       canvas.drawArc(

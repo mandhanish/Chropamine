@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'wheelpage.dart';
+import 'intropage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'sans-serif',
       ),
-      home: const WheelPage(),
+      home: const IntroScreen(), // Mengarahkan langsung ke intro saat dibuka
     );
   }
 }

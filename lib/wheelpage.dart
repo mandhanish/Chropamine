@@ -19,7 +19,7 @@ const List<Color> rybColors = [
 ];
 
 String colorToHex(Color color) {
-  return '#${color.value.toRadixString(16).substring(2).toUpperCase()}';
+  return '#${color.toARGB32().toRadixString(16).substring(2).toUpperCase()}';
 }
 
 class SchemeConfig {
@@ -158,7 +158,7 @@ class _WheelPageState extends State<WheelPage> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -182,7 +182,7 @@ class _WheelPageState extends State<WheelPage> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -369,7 +369,7 @@ class _WheelPageState extends State<WheelPage> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: color.withOpacity(0.35),
+                                      color: color.withValues(alpha: 0.35),
                                       blurRadius: 8,
                                       offset: const Offset(0, 3),
                                     ),
@@ -502,7 +502,7 @@ class StaticIndicatorPainter extends CustomPainter {
     }).toList();
 
     final linePaint = Paint()
-      ..color = const Color(0xFFE2E4E8).withOpacity(0.95)
+      ..color = const Color(0xFFE2E4E8).withValues(alpha: 0.95)
       ..strokeWidth = 14
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -529,7 +529,7 @@ class StaticIndicatorPainter extends CustomPainter {
 
     if (scheme.geometryType == 'none') {
       final arcPaint = Paint()
-        ..color = const Color(0xFFE2E4E8).withOpacity(0.95)
+        ..color = const Color(0xFFE2E4E8).withValues(alpha: 0.95)
         ..strokeWidth = 12
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;

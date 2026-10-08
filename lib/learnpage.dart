@@ -108,7 +108,7 @@ class _LearnPageState extends State<LearnPage> {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: Colors.black.withValues(alpha: 0.08),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -157,7 +157,7 @@ class _LearnPageState extends State<LearnPage> {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             ),
@@ -261,7 +261,7 @@ class HarmonyCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: item.primaryColor.withOpacity(0.35),
+              color: item.primaryColor.withValues(alpha: 0.35),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -366,7 +366,7 @@ class CardArcPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = color.withOpacity(0.35)
+      ..color = color.withValues(alpha: 0.35)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 35;
 
@@ -398,7 +398,7 @@ class CustomBottomNavBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(36),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.25),
+                color: Colors.black.withValues(alpha: 0.25),
                 blurRadius: 14,
                 offset: const Offset(0, 6),
               ),
