@@ -35,7 +35,8 @@ class _IntroScreenState extends State<IntroScreen>
       ),
     );
 
-    _logoRotate = Tween<double>(begin: -0.2, end: 0.0).animate(
+    // Dibuat 0.0 agar logo tegak lurus sesuai desain asli
+    _logoRotate = Tween<double>(begin: 0.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: const Interval(0.0, 0.35, curve: Curves.easeOutBack),
@@ -86,7 +87,7 @@ class _IntroScreenState extends State<IntroScreen>
         physics: const BouncingScrollPhysics(),
         children: [
           _buildSplashPage(),
-          const WelcomePage(), // Memanggil widget dari file welcome_page.dart
+          const WelcomePage(),
         ],
       ),
     );
@@ -110,10 +111,12 @@ class _IntroScreenState extends State<IntroScreen>
                       angle: _logoRotate.value,
                       child: Transform.scale(
                         scale: _logoScale.value,
+                        // --- TEMPAT PEMANGGILAN LOGO BARU KAMU ---
                         child: Image.asset(
                           'assets/logo.png',
                           width: 140,
                           height: 140,
+                          fit: BoxFit.contain,
                           errorBuilder: (_, __, ___) => const Icon(
                             Icons.color_lens_rounded,
                             size: 110,
