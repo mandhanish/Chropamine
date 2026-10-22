@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'loginpage.dart';
 import 'wheelpage.dart';
 
 class SignupPage extends StatelessWidget {
@@ -8,17 +9,17 @@ class SignupPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF4AC4E2),
+      // Mencegah posisi maskot terdorong saat keyboard muncul
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
-          // 1. MASKOT SI KUNING (Posisi Paling Bawah)
-          Positioned(
-            bottom: -20, // Mengintip sedikit dari bawah layar
-            left: 0,
-            right: 0,
+          // 1. MASKOT SI KUNING (Menempel sempurna di paling bawah layar)
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Image.asset(
-              'assets/sikuning.png', // Pastikan file 'sikuning.png' ada di folder assets
-              height: 220,
-              fit: BoxFit.contain,
+              'assets/sikuning.png',
+              fit: BoxFit.fitWidth,
+              width: double.infinity,
               errorBuilder: (_, __, ___) => const SizedBox(),
             ),
           ),
@@ -72,8 +73,23 @@ class SignupPage extends StatelessWidget {
                     child: const Text('Sign Up',
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
-                  // Ruang bawah agar tombol & form tidak tertutup maskot saat discroll
-                  const SizedBox(height: 180),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                        );
+                      },
+                      child: const Text(
+                        'Already have an account? Sign in',
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  // Space bawah agar konten teratas tetap bisa discroll dengan aman jika layar pendek
+                  const SizedBox(height: 40),
                 ],
               ),
             ),

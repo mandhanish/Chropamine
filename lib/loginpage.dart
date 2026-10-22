@@ -8,17 +8,17 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFFFD15B),
+      // resizeToAvoidBottomInset dikarenakan keyboard muncul agar posisi gambar tidak berantakan
+      resizeToAvoidBottomInset: false, 
       body: Stack(
         children: [
-          // 1. MASKOT SI BIRU (Posisi Paling Bawah)
-          Positioned(
-            bottom: -15, // Dibuat sedikit 'mengintip' dari bawah layar
-            left: 0,
-            right: 0,
+          // 1. MASKOT SI BIRU (Menempel sempurna di paling bawah layar)
+          Align(
+            alignment: Alignment.bottomCenter,
             child: Image.asset(
-              'assets/sibiru.png', // Pastikan file 'sibiru.png' ada di folder assets
-              height: 210,
-              fit: BoxFit.contain,
+              'assets/sibiru.png',
+              fit: BoxFit.fitWidth, // Memenuhi lebar layar secara proporsional
+              width: double.infinity,
               errorBuilder: (_, __, ___) => const SizedBox(),
             ),
           ),
@@ -65,11 +65,22 @@ class LoginPage extends StatelessWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text('Login',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: const Text(
+                      'Login',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  // Ruang penyeimbang bawah agar tombol tidak tertutup maskot
-                  const SizedBox(height: 180),
+                  const SizedBox(height: 16),
+                  // Teks bawah jika ada
+                  Center(
+                    child: TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Doesn't have any account? Sign up Here!",
+                        style: TextStyle(fontSize: 12, color: Colors.black87),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
