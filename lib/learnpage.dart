@@ -1,6 +1,7 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'learningpage.dart';
+import 'mappage.dart';
+import 'progress_manager.dart';
 import 'wheelpage.dart';
 
 class HarmonyItem {
@@ -71,6 +72,7 @@ class LearnPage extends StatefulWidget {
 
 class _LearnPageState extends State<LearnPage> {
   int? expandedIndex;
+  int _availableKeys = 0;
 
   // Catatan perolehan kunci maksimal 3 per skema (anti-farming)
   final Map<String, int> _schemeKeysMap = {
@@ -82,13 +84,29 @@ class _LearnPageState extends State<LearnPage> {
     'Split Complement': 0,
   };
 
-  int get totalKeys => _schemeKeysMap.values.fold(0, (sum, val) => sum + val);
+  int get totalKeys => _availableKeys;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadKeysData();
+  }
+
+  Future<void> _loadKeysData() async {
+    final savedMap = await ProgressManager.getSchemeKeys();
+    final available = await ProgressManager.getAvailableKeys();
+    if (!mounted) return;
+    setState(() {
+      _schemeKeysMap.addAll(savedMap);
+      _availableKeys = available;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      bottomNavigationBar: const CustomBottomNavBar(),
+      bottomNavigationBar: const CustomBottomNavBar(activeTab: 2),
       body: SafeArea(
         bottom: false,
         child: SingleChildScrollView(
@@ -96,7 +114,7 @@ class _LearnPageState extends State<LearnPage> {
               const EdgeInsets.only(left: 20, right: 20, top: 12, bottom: 100),
           child: Column(
             children: [
-              // Header dengan Dummy Total Kunci & Profile
+              // Header dengan Total Kunci Tersimpan & Profile
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -171,17 +189,7 @@ class _LearnPageState extends State<LearnPage> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
-
-              // Search Bar
-              // Container(
-              //   height: 38,
-              //   decoration: BoxDecoration(
-              //     color: const Color(0xFFF1F2F4),
-              //     borderRadius: BorderRadius.circular(18),
-              //   ),
-              // ),
-              const SizedBox(height: 70),
+              const SizedBox(height: 86),
 
               // List Harmoni Cards
               ListView.separated(
@@ -215,10 +223,9 @@ class _LearnPageState extends State<LearnPage> {
                       );
 
                       if (resultKeys != null) {
-                        setState(() {
-                          _schemeKeysMap[item.title] =
-                              math.max(currentKeys, resultKeys);
-                        });
+                        await ProgressManager.updateSchemeKeys(
+                            item.title, resultKeys);
+                        await _loadKeysData();
                       }
                     },
                   );
@@ -378,12 +385,78 @@ class CardArcPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
-// Floating Pill Bottom Navigation Bar
 // Floating Pill Bottom Navigation Bar yang sudah terhubung antar-page
-class CustomBottomNavBar extends StatelessWidget {
-  final int activeTab; // 0: Learn, 1: Wheel, 2: Book
+// Floating Pill Bottom Navigation Bar dengan Animasi Gulir & Transisi Halus
+class CustomBottomNavBar extends StatefulWidget {
+  final int activeTab; // 0: Map/Game, 1: Wheel, 2: Learn/Book
 
   const CustomBottomNavBar({super.key, this.activeTab = 2});
+
+  @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar> {
+  late int _selectedTab;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTab = widget.activeTab;
+  }
+
+  Alignment _getAlignment(int index) {
+    if (index == 0) return Alignment.centerLeft;
+    if (index == 1) return Alignment.center;
+    return Alignment.centerRight;
+  }
+
+  Future<void> _onTabTap(int targetTab) async {
+    if (_selectedTab == targetTab) return;
+
+    final int previousTab = _selectedTab;
+    // Jalankan animasi lingkaran putih meluncur lebih dulu
+    setState(() {
+      _selectedTab = targetTab;
+    });
+
+    // Tunggu animasi gulir pill selesai sebentar agar terasa interaktif
+    await Future.delayed(const Duration(milliseconds: 220));
+    if (!mounted) return;
+
+    Widget targetPage;
+    if (targetTab == 0) {
+      targetPage = const MapPage();
+    } else if (targetTab == 1) {
+      targetPage = const WheelPage();
+    } else {
+      targetPage = const LearnPage();
+    }
+
+    // Arah slide halaman mengikuti arah tab (kanan ke kiri / kiri ke kanan)
+    final bool slideFromRight = targetTab > previousTab;
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => targetPage,
+        transitionDuration: const Duration(milliseconds: 260),
+        transitionsBuilder: (_, animation, __, child) {
+          final beginOffset =
+              slideFromRight ? const Offset(0.12, 0.0) : const Offset(-0.12, 0.0);
+          final tween = Tween(begin: beginOffset, end: Offset.zero)
+              .chain(CurveTween(curve: Curves.easeOutCubic));
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -392,7 +465,7 @@ class CustomBottomNavBar extends StatelessWidget {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
         child: Container(
           height: 60,
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 14),
           decoration: BoxDecoration(
             color: const Color(0xFF1C1C1E),
             borderRadius: BorderRadius.circular(36),
@@ -404,65 +477,73 @@ class CustomBottomNavBar extends StatelessWidget {
               ),
             ],
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              // Tab 1: Game / Palette
-              const Icon(Icons.videogame_asset_outlined,
-                  color: Colors.white70, size: 24),
-
-              // Tab 2: Color Wheel (Tengah)
-              GestureDetector(
-                onTap: () {
-                  if (activeTab != 1) {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const WheelPage(),
-                        transitionDuration: Duration.zero,
-                      ),
-                    );
-                  }
-                },
+              // Indikator lingkaran putih yang bergulir mulus antar tab
+              AnimatedAlign(
+                duration: const Duration(milliseconds: 240),
+                curve: Curves.easeOutBack,
+                alignment: _getAlignment(_selectedTab),
                 child: Container(
-                  padding: EdgeInsets.all(activeTab == 1 ? 7 : 0),
-                  decoration: BoxDecoration(
-                    color: activeTab == 1 ? Colors.white : Colors.transparent,
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
                     shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.donut_large_rounded, // Icon Roda Warna
-                    color: activeTab == 1 ? Colors.black : Colors.white70,
-                    size: 22,
                   ),
                 ),
               ),
 
-              // Tab 3: Learning List
-              GestureDetector(
-                onTap: () {
-                  if (activeTab != 2) {
-                    Navigator.pushReplacement(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const LearnPage(),
-                        transitionDuration: Duration.zero,
+              // 3 Ikon Navigasi
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Tab 0: Game / Map
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _onTabTap(0),
+                    child: SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: Icon(
+                        Icons.videogame_asset_outlined,
+                        color: _selectedTab == 0 ? Colors.black : Colors.white70,
+                        size: 24,
                       ),
-                    );
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.all(activeTab == 2 ? 7 : 0),
-                  decoration: BoxDecoration(
-                    color: activeTab == 2 ? Colors.white : Colors.transparent,
-                    shape: BoxShape.circle,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.menu_book_rounded,
-                    color: activeTab == 2 ? Colors.black : Colors.white70,
-                    size: 20,
+
+                  // Tab 1: Color Wheel
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _onTabTap(1),
+                    child: SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: Icon(
+                        Icons.donut_large_rounded,
+                        color: _selectedTab == 1 ? Colors.black : Colors.white70,
+                        size: 22,
+                      ),
+                    ),
                   ),
-                ),
+
+                  // Tab 2: Learning List
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => _onTabTap(2),
+                    child: SizedBox(
+                      width: 44,
+                      height: 44,
+                      child: Icon(
+                        Icons.menu_book_rounded,
+                        color: _selectedTab == 2 ? Colors.black : Colors.white70,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
