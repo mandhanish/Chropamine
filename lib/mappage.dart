@@ -8,6 +8,7 @@ class LevelNodeData {
   final double leftFactor;
   final Color activeColor;
   final int requiredKeys;
+  final bool isComingSoon;
 
   const LevelNodeData({
     required this.level,
@@ -15,6 +16,7 @@ class LevelNodeData {
     required this.leftFactor,
     required this.activeColor,
     required this.requiredKeys,
+    this.isComingSoon = false,
   });
 }
 
@@ -45,41 +47,50 @@ class _MapPageState extends State<MapPage> {
     5: 0,
   };
 
+  // Koordinat sudah dipresisikan dengan lekukan jalan & syarat kunci baru
   final List<LevelNodeData> levels = const [
     LevelNodeData(
       level: 1,
-      topFactor: 0.72,
-      leftFactor: 0.65,
+      topFactor: 0.71,
+      leftFactor: 0.67,
       activeColor: Color(0xFFFF4136), // Merah
       requiredKeys: 2,
     ),
     LevelNodeData(
       level: 2,
       topFactor: 0.56,
-      leftFactor: 0.14,
+      leftFactor: 0.16,
       activeColor: Color(0xFFFFD230), // Kuning
-      requiredKeys: 2,
+      requiredKeys: 3,
     ),
     LevelNodeData(
       level: 3,
-      topFactor: 0.43,
-      leftFactor: 0.66,
+      topFactor: 0.42,
+      leftFactor: 0.68,
       activeColor: Color(0xFF1F8A70), // Hijau Tosca
-      requiredKeys: 2,
+      requiredKeys: 4,
     ),
     LevelNodeData(
       level: 4,
       topFactor: 0.28,
-      leftFactor: 0.14,
+      leftFactor: 0.16,
       activeColor: Color(0xFF0099E5), // Biru
-      requiredKeys: 2,
+      requiredKeys: 4,
     ),
     LevelNodeData(
       level: 5,
-      topFactor: 0.14,
-      leftFactor: 0.65,
+      topFactor: 0.13,
+      leftFactor: 0.67,
       activeColor: Color(0xFF7B2CBF), // Ungu
-      requiredKeys: 2,
+      requiredKeys: 5,
+    ),
+    LevelNodeData(
+      level: 6,
+      topFactor: -0.02, // Ujung jalan kiri atas
+      leftFactor: 0.16,
+      activeColor: Colors.grey,
+      requiredKeys: 999,
+      isComingSoon: true,
     ),
   ];
 
@@ -101,6 +112,11 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _onNodeTap(LevelNodeData data) {
+    if (data.isComingSoon) {
+      _showComingSoonPopup();
+      return;
+    }
+
     final isUnlocked = unlockedLevels[data.level] ?? false;
     if (!isUnlocked) {
       _showLockedPopup(data);
@@ -109,7 +125,111 @@ class _MapPageState extends State<MapPage> {
     }
   }
 
-  // Pop-up saat level masih terkunci (gembok)
+  // Pop-up khusus ujung atas kiri (Coming Soon & tidak bisa di-unlock)
+  void _showComingSoonPopup() {
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.topCenter,
+            children: [
+              Container(
+                margin: const EdgeInsets.only(top: 18),
+                padding: const EdgeInsets.fromLTRB(24, 42, 24, 24),
+                width: 280,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFD62C),
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: const Color(0xFFE0B400), width: 4),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0xFFD4A800),
+                      offset: Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Coming Soon',
+                      style: TextStyle(
+                        color: Color(0xFF5C4700),
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'New levels are on the way!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF7A5E00),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 28, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF999999),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0xFF707070),
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.lock_rounded,
+                              color: Colors.white, size: 18),
+                          SizedBox(width: 6),
+                          Text(
+                            'Locked',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 28, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFD4A800),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFFEBC010), width: 2),
+                ),
+                child: const Text(
+                  'Next World',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   void _showLockedPopup(LevelNodeData data) {
     final canUnlock = availableKeys >= data.requiredKeys;
 
@@ -217,7 +337,6 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  // Pop-up saat level sudah terbuka (Play)
   void _showPlayPopup(LevelNodeData data) {
     final currentStars = levelStars[data.level] ?? 0;
 
@@ -325,19 +444,7 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  // Navigasi ke halaman game level & simpan bintang setelah selesai
   Future<void> _startLevelGame(int level) async {
-    // TODO: Sambungkan ke halaman game milikmu nanti:
-    // final earnedStars = await Navigator.push<int>(
-    //   context,
-    //   MaterialPageRoute(builder: (_) => GameLevelPage(level: level)),
-    // );
-    // if (earnedStars != null) {
-    //   await ProgressManager.saveLevelStars(level, earnedStars);
-    //   await _refreshMapData();
-    // }
-
-    // Simulasi sementara: selesai main langsung dapat 3 bintang & tersimpan
     await ProgressManager.saveLevelStars(level, 3);
     await _refreshMapData();
   }
@@ -351,17 +458,15 @@ class _MapPageState extends State<MapPage> {
       bottomNavigationBar: const CustomBottomNavBar(activeTab: 0),
       body: Stack(
         children: [
-          // 1. Background Map
           Positioned.fill(
             child: Image.asset(
               'assets/map_bg.png',
               fit: BoxFit.cover,
             ),
           ),
-
-          // 2. Titik-titik Level
           ...levels.map((data) {
-            final isUnlocked = unlockedLevels[data.level] ?? false;
+            final isUnlocked =
+                !data.isComingSoon && (unlockedLevels[data.level] ?? false);
             final stars = levelStars[data.level] ?? 0;
 
             return Positioned(
@@ -369,67 +474,72 @@ class _MapPageState extends State<MapPage> {
               left: size.width * data.leftFactor,
               child: GestureDetector(
                 onTap: () => _onNodeTap(data),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (isUnlocked && stars > 0)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 4),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List.generate(3, (index) {
-                            return Transform.translate(
-                              offset: Offset(0, index == 1 ? -4 : 0),
-                              child: Icon(
-                                Icons.star_rounded,
-                                size: 22,
-                                color: index < stars
-                                    ? const Color(0xFFFFD62C)
-                                    : Colors.black26,
-                              ),
-                            );
-                          }),
-                        ),
-                      )
-                    else
-                      const SizedBox(height: 26),
-                    isUnlocked
-                        ? Container(
-                            width: 64,
-                            height: 64,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: data.activeColor,
-                              shape: BoxShape.circle,
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 4),
+                child: SizedBox(
+                  width: 68,
+                  height: 92,
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      // Bintang mengambang di atas lingkaran tanpa menggeser titik lingkaran
+                      if (isUnlocked && stars > 0)
+                        Positioned(
+                          top: 0,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List.generate(3, (index) {
+                              return Transform.translate(
+                                offset: Offset(0, index == 1 ? -4 : 0),
+                                child: Icon(
+                                  Icons.star_rounded,
+                                  size: 22,
+                                  color: index < stars
+                                      ? const Color(0xFFFFD62C)
+                                      : Colors.black26,
                                 ),
-                              ],
-                            ),
-                            child: Text(
-                              '${data.level}',
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.black.withValues(alpha: 0.35),
-                              ),
-                            ),
-                          )
-                        : Image.asset(
-                            'assets/node_locked.png',
-                            width: 64,
-                            height: 64,
+                              );
+                            }),
                           ),
-                  ],
+                        ),
+
+                      // Lingkaran Node selalu terkunci presisi di bagian bawah SizedBox
+                      isUnlocked
+                          ? Container(
+                              width: 64,
+                              height: 64,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: data.activeColor,
+                                shape: BoxShape.circle,
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                '${data.level}',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.w900,
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                ),
+                              ),
+                            )
+                          : Image.asset(
+                              'assets/node_locked.png',
+                              width: 64,
+                              height: 64,
+                            ),
+                    ],
+                  ),
                 ),
               ),
             );
           }),
 
-          // 3. Status Bar Atas (Total Bintang & Saldo Kunci dari Quiz)
+          // Status Bar Atas (Total Bintang & Saldo Kunci)
           Positioned(
             top: MediaQuery.of(context).padding.top + 14,
             left: 20,
