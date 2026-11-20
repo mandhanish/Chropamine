@@ -65,6 +65,12 @@ flutter:
     - assets/sibiru.png
     - assets/map_bg.png
     - assets/node_locked.png
+    - assets/analogous/
+    - assets/monochrome/
+    - assets/complement/
+    - assets/triangle/
+    - assets/square/
+    - assets/splitcomplement/
     # atau cukup daftarkan foldernya:
     # - assets/
   # To add assets to your application, add an assets section, like this:
